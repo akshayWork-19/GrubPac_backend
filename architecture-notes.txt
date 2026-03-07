@@ -1,0 +1,27 @@
+ARCHITECTURE NOTES - GRUBPAC
+
+1. HOW OVERLAPPING BOOKINGS ARE PREVENTED
+The system uses a mathematical overlap check in the MySQL database. Before a booking is confirmed, we query the database for any existing bookings for the same room where:
+   (Requested_Start_Date < Existing_End_Date) AND (Requested_End_Date > Existing_Start_Date)
+If this query returns any rows, it means the room is already occupied for at least one day of the requested period, and the booking is rejected.
+
+2. PROJECT STRUCTURE RATIONALE
+The project follows a "Layered Architecture" (Controller-Service-Repository pattern):
+- Routes: Define "where" the request goes.
+- Controllers: Handle "what" the request is (validation, extracting data).
+- Services: Handle "how" the logic works (the actual business rules like overlap checks).
+- Config: Manages external connections (database).
+This separation makes the code easier to test, debug, and maintain because each folder has exactly one responsibility.
+
+3. FRONTEND AND BACKEND COMMUNICATION
+Communication happens via a RESTful API using JSON:
+- The Frontend (React) sends HTTP requests using Axios.
+- It uses an "API Interceptor" to automatically attach the JWT (JSON Web Token) to the "Authorization" header for protected routes.
+- The Backend (Node.js/Express) receives the request, validates the token via middleware, and returns a JSON response with either the requested data or an error message.
+
+4. FUTURE SCALABILITY PLANS
+To handle thousands of users in the future, we would:
+- Database Sharding: Split the database into multiple servers if the booking table becomes too large.
+- Caching (Redis): Store room details in a fast memory cache to reduce SQL load.
+- Load Balancing: Run multiple instances of the backend on Render/AWS and use a balancer to distribute traffic.
+- Microservices: Separate the "Auth" and "Booking" logic into independent services that can scale separately based on demand.
