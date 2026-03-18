@@ -1,4 +1,4 @@
-# GrubPac API Documentation
+# Kasa API Documentation
 
 This document provides a detailed reference for all available API endpoints in the GrubPac application.
 

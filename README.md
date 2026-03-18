@@ -1,4 +1,4 @@
-# GrubPac Backend
+# Kasa Backend
 
 A premium Room Booking API built with Node.js, Express, and MySQL.
 
